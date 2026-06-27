@@ -5,7 +5,9 @@ import dev.matheus.whostheplayer.entity.Game;
 import dev.matheus.whostheplayer.entity.Player;
 import dev.matheus.whostheplayer.enums.Clue;
 import dev.matheus.whostheplayer.enums.Position;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -98,16 +100,26 @@ public class GameService {
         Game game = new Game(secretPlayer, gameId);
         games.put(gameId, game);
 
-
         return gameId;
     }
 
-    public GuessResult guess(String gameId, Player guessedPlayer) {
+    public GuessResult guess(String gameId, int idGuessedPlayer) {
         Game actualGame = games.get(gameId);
+        if (actualGame == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found");
+        }
         Player actualSecretPlayer = actualGame.getSecretPlayer();
 
-        GuessResult clue = compareAttempt(actualSecretPlayer, guessedPlayer);
+        if (actualGame.getFinished()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Game already finished");
+        }
 
+        Player guessedPlayer = players.get(idGuessedPlayer);
+        if (guessedPlayer == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found");
+        }
+
+        GuessResult clue = compareAttempt(actualSecretPlayer, guessedPlayer);
         if (clue.getClueName() == Clue.EXACT) {
             actualGame.setFinished(true);
         }
