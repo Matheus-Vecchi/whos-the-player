@@ -5,10 +5,12 @@ import dev.matheus.whostheplayer.entity.Game;
 import dev.matheus.whostheplayer.entity.Player;
 import dev.matheus.whostheplayer.enums.Clue;
 import dev.matheus.whostheplayer.enums.Position;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Service
 public class GameService {
     private final Map<String, Game> games = new ConcurrentHashMap<>();
     private final Map<Integer, Player> players = new HashMap<>();
@@ -95,6 +97,7 @@ public class GameService {
 
         Game game = new Game(secretPlayer, gameId);
         games.put(gameId, game);
+
 
         return gameId;
     }
