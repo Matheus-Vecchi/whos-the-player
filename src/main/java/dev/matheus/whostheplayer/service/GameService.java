@@ -1,6 +1,7 @@
 package dev.matheus.whostheplayer.service;
 
 import dev.matheus.whostheplayer.dto.GuessResult;
+import dev.matheus.whostheplayer.dto.PlayerOption;
 import dev.matheus.whostheplayer.entity.Game;
 import dev.matheus.whostheplayer.entity.Player;
 import dev.matheus.whostheplayer.enums.Clue;
@@ -14,8 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class GameService {
+    private final Random random = new Random();
     private final Map<String, Game> games = new ConcurrentHashMap<>();
     private final Map<Integer, Player> players = new HashMap<>();
+    private final List<PlayerOption> allPlayers = new ArrayList<>();
+    private final List<Integer> ids = new ArrayList<>();
     {
         players.put(1, new Player(1, "Cristiano Ronaldo", 41, "Portugal", "Saudi League", "Al-Nassr", Position.ATTACKER, 86));
         players.put(2, new Player(2, "Lionel Messi", 38, "Argentina", "MLS", "Inter Miami", Position.ATTACKER, 86));
@@ -86,12 +90,12 @@ public class GameService {
         players.put(68, new Player(68, "Randal Kolo Muani", 27, "France", "Serie A", "Juventus", Position.ATTACKER, 83));
         players.put(69, new Player(69, "Benjamin Sesko", 22, "Slovenia", "Premier League", "Manchester United", Position.ATTACKER, 84));
         players.put(70, new Player(70, "Michael Olise", 24, "France", "Bundesliga", "Bayern Munich", Position.ATTACKER, 87));
+        ids.addAll(players.keySet());
+        insertPlayers();
     }
-    List<Integer> ids = new ArrayList<>(players.keySet());
+
 
     public String startGame(){
-        final Random random = new Random();
-
         final int index = random.nextInt(ids.size());
         final Player secretPlayer = players.get(ids.get(index));
 
@@ -180,5 +184,17 @@ public class GameService {
 
         GuessResult guessResult = new GuessResult(clueName, clueAge, clueCountry, clueLeague, clueClub, cluePosition);
         return guessResult;
+    }
+
+    private void insertPlayers() {
+        for (int i = 0; i < ids.size(); i++) {
+            Player player = players.get(ids.get(i));
+            PlayerOption playerOption = new PlayerOption(player.getId(), player.getName());
+            allPlayers.add(playerOption);
+        }
+    }
+
+    public List<PlayerOption> listAllPlayers() {
+        return allPlayers;
     }
 }
