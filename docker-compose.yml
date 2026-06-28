@@ -1,0 +1,15 @@
+services:
+  db:                          # nome do serviço (você escolhe)
+    image: postgres:16         # a imagem — baixa sozinha
+    container_name: wtp-postgres
+    environment:               # o Postgres lê isso na 1ª subida
+      POSTGRES_USER: wtp
+      POSTGRES_PASSWORD: wtp123
+      POSTGRES_DB: whostheplayer
+    ports:
+      - "5432:5432"            # porta_da_tua_máquina:porta_do_container
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # named volume → pasta de dados do PG
+
+volumes:
+  pgdata:                      # declara o named volume (persiste)
