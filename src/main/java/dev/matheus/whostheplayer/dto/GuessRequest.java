@@ -2,9 +2,9 @@ package dev.matheus.whostheplayer.dto;
 
 public class GuessRequest {
     private final String gameId;
-    private final int playerId;
+    private final Long playerId;
 
-    public GuessRequest(String gameId, int playerId) {
+    public GuessRequest(String gameId, Long playerId) {
         this.gameId = gameId;
         this.playerId = playerId;
     }
@@ -13,7 +13,7 @@ public class GuessRequest {
         return gameId;
     }
 
-    public int getPlayerId() {
+    public Long getPlayerId() {
         return playerId;
     }
 }

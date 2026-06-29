@@ -1,20 +1,26 @@
 package dev.matheus.whostheplayer.entity;
 
 import dev.matheus.whostheplayer.enums.Position;
+import jakarta.persistence.*;
 
+@Entity
 public class Player {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private int age;
     private String country;
     private String league;
     private String club;
+    @Enumerated(EnumType.STRING)
     private Position position;
     private int over;
 
-    public Player(int id, String name, int age, String country, String league, String club,
+    public Player() {}
+
+    public Player(String name, int age, String country, String league, String club,
                   Position position, int over){
-        this.id = id;
         this.name = name;
         this.age = age;
         this.country = country;
@@ -24,7 +30,7 @@ public class Player {
         this.over = over;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
