@@ -1,9 +1,6 @@
 package dev.matheus.whostheplayer.controller;
 
-import dev.matheus.whostheplayer.dto.GuessRequest;
-import dev.matheus.whostheplayer.dto.GuessResult;
-import dev.matheus.whostheplayer.dto.PlayerOption;
-import dev.matheus.whostheplayer.dto.StartGameResponse;
+import dev.matheus.whostheplayer.dto.*;
 import dev.matheus.whostheplayer.service.GameService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +16,8 @@ public class GameController {
     }
 
     @PostMapping("/start")
-    public StartGameResponse start() {
-        String gameId = gameService.startGame();
+    public StartGameResponse start(@RequestBody GameModeRequest request) {
+        String gameId = gameService.startGame(request.gameMode());
         return new StartGameResponse(gameId);
     }
 
