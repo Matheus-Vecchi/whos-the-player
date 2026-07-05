@@ -2,6 +2,7 @@ package dev.matheus.whostheplayer.controller;
 
 import dev.matheus.whostheplayer.dto.*;
 import dev.matheus.whostheplayer.service.GameService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class GameController {
     }
 
     @PostMapping("/start")
-    public StartGameResponse start(@RequestBody GameModeRequest request) {
+    public StartGameResponse start(@Valid @RequestBody GameModeRequest request) {
         String gameId = gameService.startGame(request.gameMode());
         return new StartGameResponse(gameId);
     }
