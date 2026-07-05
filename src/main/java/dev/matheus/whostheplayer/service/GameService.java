@@ -1,12 +1,13 @@
 package dev.matheus.whostheplayer.service;
 
-import dev.matheus.whostheplayer.dto.GameModeRequest;
 import dev.matheus.whostheplayer.dto.GuessResult;
 import dev.matheus.whostheplayer.dto.PlayerOption;
+import dev.matheus.whostheplayer.entity.DailyPlayer;
 import dev.matheus.whostheplayer.entity.Game;
 import dev.matheus.whostheplayer.entity.Player;
 import dev.matheus.whostheplayer.enums.Clue;
 import dev.matheus.whostheplayer.enums.GameMode;
+import dev.matheus.whostheplayer.repository.DailyPlayerRepository;
 import dev.matheus.whostheplayer.repository.GameRepository;
 import dev.matheus.whostheplayer.repository.PlayerRepository;
 import jakarta.transaction.Transactional;
@@ -14,19 +15,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Clock;
+import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class GameService {
     private final PlayerRepository playerRepository;
     private final GameRepository gameRepository;
+    private final DailyPlayerRepository dailyPlayerRepository;
+    private final Clock gameClock;
 
-    public GameService(PlayerRepository playerRepository, GameRepository gameRepository) {
+    public GameService(PlayerRepository playerRepository, GameRepository gameRepository, DailyPlayerRepository dailyPlayerRepository, Clock gameClock) {
         this.playerRepository = playerRepository;
         this.gameRepository = gameRepository;
+        this.dailyPlayerRepository = dailyPlayerRepository;
+        this.gameClock = gameClock;
     }
-
 
 
     @Transactional
@@ -35,7 +40,9 @@ public class GameService {
         if (gameMode == GameMode.ENDLESS) {
             secretPlayer = playerRepository.findRandomPlayer();
         } else {
-            secretPlayer = playerRepository.findRandomPlayer();
+            DailyPlayer dailyPlayer = dailyPlayerRepository.findById(LocalDate.now(gameClock))
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Daily player not found"));
+            secretPlayer = dailyPlayer.getPlayer();
         }
 
         final String gameId = UUID.randomUUID().toString();
